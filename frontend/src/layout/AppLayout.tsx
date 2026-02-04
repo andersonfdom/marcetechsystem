@@ -1,24 +1,61 @@
 import React from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import { logoff } from '../api/auth'
 
 export function AppLayout() {
   const navigate = useNavigate()
+  const location = useLocation()
+
+  const [sidebarCollapsed, setSidebarCollapsed] = React.useState(false)
+  const [cadastroOpen, setCadastroOpen] = React.useState(false)
+
+  // No mobile, iniciar fechado
+  React.useEffect(() => {
+    const isMobile = window.matchMedia('(max-width: 991px)').matches
+    if (isMobile) setSidebarCollapsed(true)
+  }, [])
+
+  // Ao navegar no mobile, fechar o menu e remover o overlay
+  React.useEffect(() => {
+    const isMobile = window.matchMedia('(max-width: 991px)').matches
+    if (isMobile) {
+      setSidebarCollapsed(true)
+      setCadastroOpen(false)
+    }
+  }, [location.pathname])
+
+  function toggleSidebar() {
+    setSidebarCollapsed((v) => !v)
+  }
+
+  function closeSidebarOnMobile() {
+    const isMobile = window.matchMedia('(max-width: 991px)').matches
+    if (isMobile) setSidebarCollapsed(true)
+  }
+
+  function toggleCadastro(e: React.MouseEvent) {
+    e.preventDefault()
+    setCadastroOpen((v) => !v)
+  }
 
   async function handleLogoff() {
     await logoff()
+    closeSidebarOnMobile()
     navigate('/login')
   }
 
   return (
     <div className="app-container">
-      <div className="mobile-overlay" id="mobileOverlay"></div>
+      <div
+        className={`mobile-overlay ${!sidebarCollapsed ? 'active' : ''}`}
+        onClick={closeSidebarOnMobile}
+      ></div>
 
-      <button className="toggle-sidebar" id="toggleSidebar" type="button">
+      <button className="toggle-sidebar" type="button" onClick={toggleSidebar}>
         <i className="fas fa-bars"></i>
       </button>
 
-      <aside className="sidebar" id="sidebar">
+      <aside className={`sidebar ${sidebarCollapsed ? 'collapsed' : ''}`}>
         <div className="logo">
           <img src="/img/logo.jpg" alt="MarceTech" />
         </div>
@@ -26,7 +63,7 @@ export function AppLayout() {
         <nav className="sidebar-nav">
           <ul className="nav-menu">
             <li className="nav-item">
-              <NavLink className="nav-link" to="/dashboard">
+              <NavLink className="nav-link" to="/dashboard" onClick={closeSidebarOnMobile}>
                 <div className="nav-content">
                   <i className="fas fa-home"></i>
                   <span className="nav-text">Dashboard</span>
@@ -34,48 +71,53 @@ export function AppLayout() {
               </NavLink>
             </li>
 
-            <li className="nav-item has-submenu">
-              <a href="#" className="nav-link" onClick={(e) => { e.preventDefault(); document.body.classList.toggle('submenu-open') }}>
+            <li className={`nav-item has-submenu ${cadastroOpen ? 'active' : ''}`}>
+              <a href="#" className="nav-link" onClick={toggleCadastro}>
                 <div className="nav-content">
                   <i className="fas fa-folder-plus"></i>
                   <span className="nav-text">Cadastro</span>
                 </div>
               </a>
+
               <ul className="submenu">
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/clientes">
+                  <NavLink className="nav-link" to="/clientes" onClick={closeSidebarOnMobile}>
                     <div className="nav-content">
                       <i className="fas fa-users"></i>
                       <span className="nav-text">Clientes</span>
                     </div>
                   </NavLink>
                 </li>
+
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/lojas">
+                  <NavLink className="nav-link" to="/lojas" onClick={closeSidebarOnMobile}>
                     <div className="nav-content">
                       <i className="fas fa-store"></i>
                       <span className="nav-text">Lojas</span>
                     </div>
                   </NavLink>
                 </li>
+
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/vendedores">
+                  <NavLink className="nav-link" to="/vendedores" onClick={closeSidebarOnMobile}>
                     <div className="nav-content">
                       <i className="fas fa-user-tie"></i>
                       <span className="nav-text">Vendedores</span>
                     </div>
                   </NavLink>
                 </li>
+
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/materiais">
+                  <NavLink className="nav-link" to="/materiais" onClick={closeSidebarOnMobile}>
                     <div className="nav-content">
                       <i className="fas fa-box"></i>
                       <span className="nav-text">Materiais</span>
                     </div>
                   </NavLink>
                 </li>
+
                 <li className="nav-item">
-                  <NavLink className="nav-link" to="/usuarios">
+                  <NavLink className="nav-link" to="/usuarios" onClick={closeSidebarOnMobile}>
                     <div className="nav-content">
                       <i className="fas fa-user-cog"></i>
                       <span className="nav-text">Usuários do Sistema</span>
@@ -86,7 +128,7 @@ export function AppLayout() {
             </li>
 
             <li className="nav-item">
-              <NavLink className="nav-link" to="/orcamentos">
+              <NavLink className="nav-link" to="/orcamentos" onClick={closeSidebarOnMobile}>
                 <div className="nav-content">
                   <i className="fas fa-money-bill"></i>
                   <span className="nav-text">Orçamentos</span>
@@ -95,7 +137,7 @@ export function AppLayout() {
             </li>
 
             <li className="nav-item">
-              <NavLink className="nav-link" to="/configuracoes">
+              <NavLink className="nav-link" to="/configuracoes" onClick={closeSidebarOnMobile}>
                 <div className="nav-content">
                   <i className="fas fa-wrench"></i>
                   <span className="nav-text">Configurações do Sistema</span>
@@ -104,7 +146,7 @@ export function AppLayout() {
             </li>
 
             <li className="nav-item">
-              <button className="nav-link btn btn-link" style={{ textDecoration: 'none' }} onClick={handleLogoff}>
+              <button type="button" className="nav-link nav-button" onClick={handleLogoff}>
                 <div className="nav-content">
                   <i className="fas fa-sign-out-alt"></i>
                   <span className="nav-text">Sair</span>
@@ -129,8 +171,13 @@ export function AppLayout() {
               </div>
             </div>
           </div>
+
           <div className="row">
-            <div id="mensagemRetornoCadOrcamento" className="alert alert-warning" style={{ display: 'none' }}></div>
+            <div
+              id="mensagemRetornoCadOrcamento"
+              className="alert alert-warning"
+              style={{ display: 'none' }}
+            ></div>
           </div>
           <div className="row">
             <div id="mensagemCritica" className="alert alert-danger" style={{ display: 'none' }}></div>

@@ -149,15 +149,24 @@ export function ClientesPage() {
         </div>
       </div>
 
-      {/* Modal simples (sem bootstrap modal para manter enxuto) */}
+      {/* Modal (estrutura igual ao Bootstrap para evitar conflitos de CSS) */}
       {isOpen ? (
-        <div className="modal-backdrop show" style={{ display: 'block' }}>
-          <div className="modal show" style={{ display: 'block' }}>
-            <div className="modal-dialog">
+        <>
+          <div
+            className="modal show"
+            style={{ display: 'block' }}
+            role="dialog"
+            aria-modal="true"
+            onClick={() => setIsOpen(false)}
+          >
+            <div
+              className="modal-dialog modal-dialog-centered"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="modal-content">
                 <div className="modal-header">
                   <h5 className="modal-title">{form.idCliente ? 'Editar Cliente' : 'Novo Cliente'}</h5>
-                  <button className="btn-close" onClick={() => setIsOpen(false)} />
+                  <button type="button" className="btn-close" aria-label="Fechar" onClick={() => setIsOpen(false)} />
                 </div>
                 <div className="modal-body">
                   <div className="mb-2">
@@ -174,13 +183,18 @@ export function ClientesPage() {
                   </div>
                 </div>
                 <div className="modal-footer">
-                  <button className="btn btn-secondary" onClick={() => setIsOpen(false)}>Cancelar</button>
-                  <button className="btn btn-primary" onClick={salvar}>Salvar</button>
+                  <button type="button" className="btn btn-secondary" onClick={() => setIsOpen(false)}>
+                    Cancelar
+                  </button>
+                  <button type="button" className="btn btn-primary" onClick={salvar}>
+                    Salvar
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+          <div className="modal-backdrop fade show" />
+        </>
       ) : null}
     </div>
   )

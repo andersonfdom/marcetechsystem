@@ -319,29 +319,33 @@ body, html {
     }
 
 /* ===== OVERLAY MOBILE ===== */
-.mobile-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(2px);
-    z-index: 999;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
+/* ===== OVERLAY (mobile) ===== */
+.mobile-overlay{
+    display: none; /* desktop: nunca escurece */
 }
 
-    .mobile-overlay.active {
+@media (max-width: 991px){
+    .mobile-overlay{
         display: block;
-        opacity: 1;
-        pointer-events: auto;
+        position: fixed;
+        inset: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(2px);
+        z-index: 999; /* abaixo do menu */
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.25s ease;
+        pointer-events: none;
     }
 
+    .mobile-overlay.active{
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+}
 /* ===== CONTEÚDO RESPONSIVO ===== */
 
 /* Containers de páginas */
@@ -1305,6 +1309,26 @@ body, html {
     padding: 1.5rem;
 }
 
+/* Ajustes para o footer do modal (evita botões sobrepostos no mobile) */
+.modal-footer{
+    gap: 10px;
+}
+
+.modal-footer .btn{
+    width: auto; /* o CSS global no mobile define .btn { width: 100% } */
+}
+
+@media (max-width: 767px){
+    .modal-footer{
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .modal-footer .btn{
+        width: 100%;
+    }
+}
+
     .modal-header .btn-close {
         filter: invert(1);
         opacity: 0.8;
@@ -1398,4 +1422,53 @@ img, table, tr, td, th {
             flex: 0 0 80px !important;
             font-size: 0.75rem !important;
         }
+}
+
+
+/* ===== BOTÃO DO MENU (ex.: SAIR) ===== */
+.nav-button{
+    background: transparent;
+    border: 0;
+    padding: 14px 20px; /* igual ao .nav-link */
+    width: 100%;
+    text-align: left;
+    color: inherit;
+    font: inherit;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.nav-button:focus{
+    outline: none;
+}
+
+
+/* === React migration: modal responsiveness fixes === */
+/* Evita que regra global .btn { width: 100%; } (mobile) quebre o layout dos modais */
+.modal .modal-footer{
+  gap: 10px;
+}
+
+/* Por padrão, dentro do footer do modal, os botões não devem herdar width 100% fora do contexto mobile empilhado */
+.modal .modal-footer .btn{
+  width: auto;
+  white-space: nowrap;
+}
+
+/* Mantém o botão de fechar alinhado corretamente */
+.modal .btn-close{
+  box-shadow: none;
+}
+
+@media (max-width: 767px){
+  /* No celular, empilha os botões do footer e evita sobreposição */
+  .modal .modal-footer{
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .modal .modal-footer .btn{
+    width: 100%;
+  }
 }
