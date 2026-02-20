@@ -1,1 +1,0 @@
-server=srv953.hstgr.io;port=3306;database=u930482006_marcetech;user=u930482006_marcetech;password=WZyk&Y6lv5^ejcm1;convertzerodatetime=True;
