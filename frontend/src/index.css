@@ -1,0 +1,162 @@
+:root {
+    --azul-sidebar: #1A237E;
+    --azul-hover: #283593;
+    --fundo-conteudo: #F0F2F5;
+    --sidebar-width: 280px;
+    --header-height: 60px;
+}
+
+/* Reset básico */
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
+
+html, body {
+    width: 100%;
+    min-height: 100%;
+    background-color: var(--fundo-conteudo);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    /* Permite o scroll natural do navegador */
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* Melhora o scroll no iOS */
+}
+
+/* Container principal */
+.app-container {
+    display: flex; /* Desktop mantém flex */
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* SIDEBAR: Fixa no desktop, Off-canvas no mobile */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--azul-sidebar);
+    color: white;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1100;
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Scroll apenas dentro do menu se necessário */
+}
+
+.sidebar.collapsed {
+    transform: translateX(-100%);
+}
+
+/* WRAPPER: Área à direita da sidebar */
+.main-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: var(--sidebar-width);
+    transition: margin-left 0.3s ease-in-out;
+    min-width: 0;
+    min-height: 100vh;
+}
+
+.sidebar.collapsed + .main-wrapper {
+    margin-left: 0;
+}
+
+/* HEADER: Sticky no topo */
+.main-header {
+    height: var(--header-height);
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.toggle-sidebar-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--azul-sidebar);
+    cursor: pointer;
+}
+
+/* ÁREA DE CONTEÚDO: DESTRAVADA */
+.content-area {
+    padding: 20px;
+    flex: 1; /* Ocupa o espaço necessário e cresce verticalmente */
+    width: 100%;
+}
+
+/* --- MEDIA QUERIES (MOBILE) --- */
+@media (max-width: 991px) {
+    .app-container {
+        display: block; /* Quebra o flex para evitar bugs de scroll no mobile */
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .main-wrapper {
+        margin-left: 0 !important;
+        width: 100%;
+        min-height: 100vh;
+    }
+
+    /* Ajuste para o header no mobile */
+    .main-header {
+        position: sticky;
+        width: 100%;
+    }
+}
+
+/* OVERLAY: Escurece o fundo no mobile */
+.mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1050;
+}
+
+.mobile-overlay.active {
+    display: block;
+}
+
+/* Estilos de Tabela (MarceTech) */
+.tituloTabela > tr > th {
+    background-color: var(--azul-sidebar) !important;
+    color: #ffffff !important;
+    padding: 12px;
+}
+
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-bottom: 1rem;
+}
+
+.botaoAcesso {
+    background-color: var(--azul-sidebar);
+    color: white;
+}
+
+.botaoAcesso:hover {
+    background-color: var(--azul-hover);
+    color: white;
+}
